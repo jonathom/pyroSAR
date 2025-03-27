@@ -495,7 +495,7 @@ def correctOSV(id, directory, osvdir=None, osvType='POE', timeout=20,
     if not isinstance(id, ID):
         raise IOError('id must be of type pyroSAR.ID')
     
-    if id.sensor not in ['S1A', 'S1B']:
+    if id.sensor not in ['S1A', 'S1B', 'S1C']:
         raise IOError('this method is currently only available for Sentinel-1. Please stay tuned...')
     
     if not os.path.isdir(logpath):
@@ -742,7 +742,7 @@ def geocode(scene, dem, tmpdir, outdir, spacing, scaling='linear', func_geoback=
         os.makedirs(path_log)
     
     for scene in scenes:
-        if scene.sensor in ['S1A', 'S1B'] and removeS1BorderNoiseMethod in ['ESA', 'pyroSAR']:
+        if scene.sensor in ['S1A', 'S1B', 'S1C'] and removeS1BorderNoiseMethod in ['ESA', 'pyroSAR']:
             log.info('removing border noise')
             scene.removeGRDBorderNoise(method=removeS1BorderNoiseMethod)
     
@@ -757,7 +757,7 @@ def geocode(scene, dem, tmpdir, outdir, spacing, scaling='linear', func_geoback=
     
     if update_osv:
         for scene in scenes:
-            if scene.sensor in ['S1A', 'S1B']:
+            if scene.sensor in ['S1A', 'S1B', 'S1C']:
                 log.info('updating orbit state vectors')
                 if allow_RES_OSV:
                     osvtype = ['POE', 'RES']
@@ -802,7 +802,7 @@ def geocode(scene, dem, tmpdir, outdir, spacing, scaling='linear', func_geoback=
             images_new.append(out)
         images = images_new
     
-    if scene.sensor in ['S1A', 'S1B']:
+    if scene.sensor in ['S1A', 'S1B', 'S1C']:
         log.info('multilooking')
         groups = groupby(images, 'polarization')
         images = []
@@ -984,7 +984,7 @@ def geocode(scene, dem, tmpdir, outdir, spacing, scaling='linear', func_geoback=
             exporter(data_in=image + '_gamma0-rtc_geo', scale=scale, dtype=2,
                      nodata=dict(zip(('linear', 'db'), nodata))[scale], outdir=outdir)
     
-    if scene.sensor in ['S1A', 'S1B']:
+    if scene.sensor in ['S1A', 'S1B', 'S1C']:
         outname_base = scene.outname_base(extensions=basename_extensions)
         shutil.copyfile(os.path.join(scene.scene, 'manifest.safe'),
                         os.path.join(outdir, outname_base + '_manifest.safe'))
